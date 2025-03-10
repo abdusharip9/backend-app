@@ -8,10 +8,17 @@ const errorMiddleware = require('./middlewares/error.middleware.js')
 const app = express()
 
 app.use(express.json())
+const allowedOrigins = [
+	'https://a1kafe-mod.netlify.app',
+	'http://localhost:3000',
+	'http://localhost:3001',
+]
+
 app.use(
 	cors({
-		origin: ['http://127.0.0.1:5500', 'https://a1kafe-mod.netlify.app/'],
+		origin: allowedOrigins,
 		credentials: true,
+		methods: ['GET', 'POST', 'PUT', 'DELETE'],
 	})
 )
 app.use(cookieParser())
