@@ -16,14 +16,12 @@ class AuthService {
 		const hashPassword = await bcrypt.hash(password, 10)
 		const user = await usersModel.create({ email, password: hashPassword })
 
-		// const activatedToken = tokenService.activationToken({ ...UserDto })
-
-		// const activationLink = `${process.env.CLIENT_URL}/activate.html?token=${activatedToken}`
-
-		// await emailService.sendMail(user.email, activationLink)
 		const userDto = new UserDto(user)
+		const tokens = tokenService.generateToken({ ...UserDto })
 
-		return { user: userDto }
+		await tokenService.saveToken(userDto.id, tokens.refreshToken)
+
+		return { user: userDto, ...tokens }
 	}
 
 	async login(email, password) {
@@ -40,7 +38,15 @@ class AuthService {
 		}
 
 		const userDto = new UserDto(user)
-		return { user: userDto }
+
+		const tokens = tokenService.generateToken({ ...userDto })
+		await tokenService.saveToken(userDto.id, tokens.refreshToken)
+
+		return { user: userDto, ...tokens }
+	}
+
+	async logout(refreshToken) {
+		return await tokenService.removeToken(refreshToken)
 	}
 }
 
