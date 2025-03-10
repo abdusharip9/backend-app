@@ -48,6 +48,29 @@ class AuthService {
 	async logout(refreshToken) {
 		return await tokenService.removeToken(refreshToken)
 	}
+
+	async refresh(refreshToken) {
+		if (!refreshToken) {
+			throw BaseError.UnAuthorizedError('Bad authorization')
+		}
+
+		const userPayload = tokenService.validateRefreshToken(refreshToken)
+		const tokenDb = await tokenService.findToken(refreshToken)
+		console.log(userPayload, tokenDb)
+
+		if (!userPayload || !tokenDb) {
+			throw BaseError.UnAuthorizedError('Bad authorization')
+		}
+
+		const user = await usersModel.findById(userPayload.id)
+		const userDto = new UserDto(user)
+
+		const tokens = tokenService.generateToken({ ...userDto })
+
+		await tokenService.saveToken(userDto.id, tokens.refreshToken)
+
+		return { user: userDto, ...tokens }
+	}
 }
 
 module.exports = new AuthService()

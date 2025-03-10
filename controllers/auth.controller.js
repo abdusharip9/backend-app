@@ -1,7 +1,4 @@
-const jwt = require('jsonwebtoken')
 const authService = require('../services/auth.service')
-const usersModel = require('../models/users.model')
-const BaseError = require('../errors/base.error')
 
 class AuthController {
 	async register(req, res, next) {
@@ -35,6 +32,20 @@ class AuthController {
 			const token = await authService.logout(refreshToken)
 			res.clearCookies('refreshToken')
 			return res.json({ token })
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async refresh(req, res, next) {
+		try {
+			const { refreshToken } = req.cookies
+			const data = await authService.refresh(refreshToken)
+			res.cookie('refreshToken', data.refreshToken, {
+				httpOnly: true,
+				maxAge: 30 * 24 * 60 * 60 * 1000,
+			})
+			return res.json(data)
 		} catch (error) {
 			next(error)
 		}
