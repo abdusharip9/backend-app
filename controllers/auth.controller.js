@@ -19,8 +19,10 @@ class AuthController {
 			res.cookie('refreshToken', data.refreshToken, {
 				httpOnly: true,
 				maxAge: 30 * 24 * 60 * 60 * 1000,
+				// secure: true,
+				// sameSite: 'None',
 			})
-			return res.json(data)
+			return res.json({ data })
 		} catch (error) {
 			next(error)
 		}
@@ -46,6 +48,16 @@ class AuthController {
 				maxAge: 30 * 24 * 60 * 60 * 1000,
 			})
 			return res.json(data)
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async getUser(req, res, next) {
+		try {
+			const { userId } = req.user.id
+			const userData = await authService.getUser(userId)
+			return res.json(userData)
 		} catch (error) {
 			next(error)
 		}

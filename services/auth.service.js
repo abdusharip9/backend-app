@@ -71,6 +71,10 @@ class AuthService {
 
 		return { user: userDto, ...tokens }
 	}
+
+	async getUser(userId) {
+		return await usersModel.findOne({ userId })
+	}
 }
 
 module.exports = new AuthService()
