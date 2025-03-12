@@ -25,5 +25,14 @@ router.post('/login', authController.login)
 router.post('/logout', authController.logout)
 router.get('/refresh', authController.refresh)
 router.get('/verify', authMiddleware, authController.getUser)
+router.get('/ping', (req, res) => {
+	res.status(200).json({ message: 'Server is alive' })
+})
+
+setInterval(() => {
+	fetch('https://backend-app-5rtx.onrender.com/api/auth/api/ping')
+		.then(res => console.log('✅ Ping sent to keep the server alive'))
+		.catch(err => console.error('❌ Ping failed:', err))
+}, 600000) // 10 daqiqa (600000 ms)
 
 module.exports = router
