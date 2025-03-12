@@ -72,8 +72,8 @@ class AuthService {
 		return { user: userDto, ...tokens }
 	}
 
-	async getUser(userId) {
-		return await usersModel.findOne({ userId })
+	async getUser(email) {
+		return await usersModel.findOne({ email })
 	}
 }
 
