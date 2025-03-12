@@ -55,8 +55,8 @@ class AuthController {
 
 	async getUser(req, res, next) {
 		try {
-			const email = req.user
-			const userData = await authService.getUser(email)
+			const { userId } = req.user.id
+			const userData = await authService.getUser(userId)
 			return res.json(userData)
 		} catch (error) {
 			next(error)
