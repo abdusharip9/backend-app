@@ -3,7 +3,6 @@ const usersModel = require('../models/users.model')
 const bcrypt = require('bcrypt')
 const UserDto = require('../dtos/user.dto')
 const tokenService = require('./token.service')
-const emailService = require('../services/email.service')
 
 class AuthService {
 	async register(email, password) {
@@ -74,6 +73,26 @@ class AuthService {
 
 	async getUser(email) {
 		return await usersModel.findOne({ email })
+	}
+
+	async updateUser(post, id) {
+		console.log(post)
+
+		if (!id) {
+			throw new Error('Id not found!')
+		}
+
+		const user = await usersModel.findByIdAndUpdate(
+			id,
+			{
+				$set: post,
+			},
+			{ new: true }
+		)
+
+		const userDto = new UserDto(user)
+
+		return { user: userDto }
 	}
 }
 

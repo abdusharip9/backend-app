@@ -24,10 +24,11 @@ router.post(
 router.post('/login', authController.login)
 router.post('/logout', authController.logout)
 router.get('/refresh', authController.refresh)
-router.get('/verify', authMiddleware, authController.getUser)
+router.get('/getUser', authMiddleware, authController.getUser)
 router.get('/ping', (req, res) => {
 	res.status(200).json({ message: 'Server is alive' })
 })
+router.put('/update-user/:id', authMiddleware, authController.updateUser)
 
 setInterval(() => {
 	fetch('https://backend-app-5rtx.onrender.com/api/auth/api/ping')

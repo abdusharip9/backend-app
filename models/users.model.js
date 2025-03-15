@@ -4,6 +4,10 @@ const UserSchema = new Schema(
 	{
 		email: { type: String, required: true, unique: true },
 		password: { type: String, required: true },
+		firstName: { type: String, required: false },
+		lastName: { type: String, required: false },
+		phone: { type: String, required: false },
+		adress: { type: String, required: true, unique: true },
 		isActivated: { type: Boolean, default: false },
 	},
 	{ timestamps: true }

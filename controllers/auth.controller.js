@@ -62,6 +62,19 @@ class AuthController {
 			next(error)
 		}
 	}
+
+	async updateUser(req, res, next) {
+		try {
+			const { body, params } = req
+			console.log(params.id)
+
+			// const postData = { firstName, lastName, phone, adress, email }
+			const updateStatus = await authService.updateUser(body, params.id)
+			return res.json(updateStatus)
+		} catch (error) {
+			next(error)
+		}
+	}
 }
 
 module.exports = new AuthController()
