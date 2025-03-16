@@ -71,8 +71,13 @@ class AuthService {
 		return { user: userDto, ...tokens }
 	}
 
-	async getUser(email) {
-		return await usersModel.findOne({ email })
+	async getUser(id) {
+		if (!id) {
+			throw new Error('Id not found!')
+		}
+		const user = await usersModel.findById(id)
+		const userDto = new UserDto(user)
+		return { userDto }
 	}
 
 	async updateUser(post, id) {
