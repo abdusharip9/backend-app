@@ -76,8 +76,6 @@ class AuthService {
 	}
 
 	async updateUser(post, id) {
-		console.log(post)
-
 		if (!id) {
 			throw new Error('Id not found!')
 		}

@@ -8,6 +8,7 @@ const UserSchema = new Schema(
 		lastName: { type: String, required: false },
 		phone: { type: String, required: false },
 		adress: { type: String, required: true, unique: true },
+		kafeName: { type: String, required: false },
 		isActivated: { type: Boolean, default: false },
 	},
 	{ timestamps: true }

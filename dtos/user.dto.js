@@ -3,9 +3,10 @@ module.exports = class UserDto {
 	firstName
 	lastName
 	phone
+	adress
+	kafeName
 	id
 	isActivated
-	adress
 
 	constructor(user) {
 		this.email = user.email
@@ -13,6 +14,7 @@ module.exports = class UserDto {
 		this.lastName = user.lastName
 		this.phone = user.phone
 		this.adress = user.adress
+		this.kafeName = user.kafeName
 		this.id = user.id
 		this.isActivated = user.isActivated
 	}
