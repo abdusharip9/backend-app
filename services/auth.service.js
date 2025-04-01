@@ -3,6 +3,7 @@ const usersModel = require('../models/users.model')
 const bcrypt = require('bcrypt')
 const UserDto = require('../dtos/user.dto')
 const tokenService = require('./token.service')
+const kafeModel = require('../models/kafe.model')
 
 class AuthService {
 	async register(email, password) {
@@ -75,8 +76,13 @@ class AuthService {
 		if (!id) {
 			throw new Error('Id not found!')
 		}
+
 		const user = await usersModel.findById(id)
-		const userDto = new UserDto(user)
+		const userKafe = await kafeModel.findById(id)
+		let userDto = null
+		if (userKafe && userKafe.name) {
+			userDto = new UserDto(user, userKafe.name)
+		} else userDto = new UserDto(user)
 		return { userDto }
 	}
 
@@ -96,6 +102,132 @@ class AuthService {
 		const userDto = new UserDto(user)
 
 		return { user: userDto }
+	}
+
+	async addKafe(post, id) {
+		if (!id) {
+			throw new Error('Id not found!')
+		}
+
+		const newKafeName = post.kafeName
+		if (!newKafeName) {
+			throw new Error('Kafe nomi bo‘sh bo‘lishi mumkin emas')
+		}
+
+		const existKafe = await kafeModel.findOne({ name: newKafeName })
+
+		if (existKafe) {
+			throw BaseError.BadRequest(`${newKafeName} nom oldindan mavjud`)
+		}
+
+		const updatedKafe = await kafeModel.findOneAndUpdate(
+			{ _id: id },
+			{ $addToSet: { name: newKafeName } },
+			{ new: true, upsert: true }
+		)
+
+		return {
+			kafes: updatedKafe.name,
+			message: 'Malumotlar yangilandi',
+		}
+	}
+
+	async deleteKafe(post, id) {
+		if (!id) {
+			throw new Error('Id not found!')
+		}
+
+		const changedUserData = await kafeModel.findByIdAndUpdate(
+			id,
+			{ $pull: { name: post.kafeName } },
+			{ new: true }
+		)
+
+		if (!changedUserData) {
+			throw BaseError.BadRequest(`${post.kafeName} topilmadi`)
+		}
+		return {
+			updatedUser: changedUserData,
+			message: `${post.kafeName} - Olib tashlandi`,
+		}
+	}
+	// async editKafe(post, id) {
+	// 	if (!id) {
+	// 		throw new Error('Id not found!')
+	// 	}
+
+	// 	const newKafeName = post.kafeName
+	// 	if (!newKafeName) {
+	// 		throw new Error('Kafe nomi bo‘sh bo‘lishi mumkin emas')
+	// 	}
+	// 	const existKafe = await kafeModel.findOne({ name: newKafeName })
+	// 	if (existKafe) {
+	// 		throw BaseError.BadRequest(`${newKafeName} nom oldindan mavjud`)
+	// 	}
+
+	// 	const editedKafe = await kafeModel.findByIdAndUpdate(
+	// 		id,
+	// 		{ name: post.kafeName },
+	// 		{ new: true }
+	// 	)
+
+	// 	return {
+	// 		updatedUser: editedKafe,
+	// 		message: `Kafe nomi o'zgartirildi => ${post.kafeName}`,
+	// 	}
+	// }
+
+	async addPhone(post, id) {
+		if (!id) {
+			throw new Error('Id not found!')
+		}
+
+		const newPhone = post.phone
+		if (!newPhone) {
+			throw new Error('Telefon raqami bo‘sh bo‘lishi mumkin emas')
+		}
+
+		const existPhone = await usersModel.findOne({ phone: newPhone })
+
+		if (existPhone) {
+			throw BaseError.BadRequest(`${newPhone} raqam oldindan mavjud`)
+		}
+
+		const updatedUser = await usersModel.findOneAndUpdate(
+			{ _id: id },
+			{ $addToSet: { phone: newPhone } },
+			{ new: true, upsert: true }
+		)
+
+		return {
+			phones: updatedUser.phone,
+			message: 'Ma’lumotlar yangilandi',
+		}
+	}
+	async deletePhone(post, id) {
+		if (!id) {
+			throw new Error('Id not found!')
+		}
+
+		const newPhone = post.phone
+		if (!newPhone) {
+			throw new Error('Telefon raqami bo‘sh bo‘lishi mumkin emas')
+		}
+
+		const updatedUser = await usersModel.findByIdAndUpdate(
+			{ _id: id },
+			{ $pull: { phone: newPhone } },
+			{ new: true, upsert: true }
+		)
+
+		if (!updatedUser) {
+			throw BaseError.BadRequest(`${post.phone} topilmadi`)
+		}
+
+		return {
+			phones: updatedUser.phone,
+			message: `${post.phone} - Olib tashlandi`,
+		}
 	}
 }
 

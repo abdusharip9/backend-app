@@ -72,6 +72,57 @@ class AuthController {
 			next(error)
 		}
 	}
+
+	async addKafe(req, res, next) {
+		try {
+			const { body, params } = req
+			const newData = await authService.addKafe(body, params.id)
+			return res.json({ newData })
+		} catch (error) {
+			next(error)
+		}
+	}
+	async deleteKafe(req, res, next) {
+		try {
+			const { body, params } = req
+			console.log(body.phone, params.id)
+
+			const newData = await authService.deleteKafe(body, params.id)
+			return res.json({ newData })
+		} catch (error) {
+			next(error)
+		}
+	}
+	// async editKafe(req, res, next) {
+	// 	try {
+	// 		const { body, params } = req
+	// 		console.log(body.kafeName, params.id)
+
+	// 		const newData = await authService.editKafe(body, params.id)
+	// 		return res.json({ newData })
+	// 	} catch (error) {
+	// 		next(error)
+	// 	}
+	// }
+
+	async addPhone(req, res, next) {
+		try {
+			const { body, params } = req
+			const newData = await authService.addPhone(body, params.id)
+			return res.json({ newData })
+		} catch (error) {
+			next(error)
+		}
+	}
+	async deletePhone(req, res, next) {
+		try {
+			const { body, params } = req
+			const newData = await authService.deletePhone(body, params.id)
+			return res.json({ newData })
+		} catch (error) {
+			next(error)
+		}
+	}
 }
 
 module.exports = new AuthController()

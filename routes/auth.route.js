@@ -25,10 +25,36 @@ router.post('/login', authController.login)
 router.post('/logout', authController.logout)
 router.get('/refresh', authController.refresh)
 router.get('/getUser/:id', authMiddleware, authController.getUser)
+router.post('/update-user/:id', authMiddleware, authController.updateUser)
+router.post(
+	'/update-user/add-kafeName/:id',
+	authMiddleware,
+	authController.addKafe
+)
+router.post(
+	'/update-user/add-phone/:id',
+	authMiddleware,
+	authController.addPhone
+)
+router.post(
+	'/update-user/delete-kafeName/:id',
+	authMiddleware,
+	authController.deleteKafe
+)
+router.post(
+	'/update-user/delete-phone/:id',
+	authMiddleware,
+	authController.deletePhone
+)
+// router.post(
+// 	'/update-user/edit-kafe/:id',
+// 	authMiddleware,
+// 	authController.deleteKafe
+// )
+
 router.get('/ping', (req, res) => {
 	res.status(200).json({ message: 'Server is alive' })
 })
-router.put('/update-user/:id', authMiddleware, authController.updateUser)
 
 setInterval(() => {
 	fetch('https://backend-app-5rtx.onrender.com/api/auth/api/ping')

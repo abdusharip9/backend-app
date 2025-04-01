@@ -8,13 +8,13 @@ module.exports = class UserDto {
 	id
 	isActivated
 
-	constructor(user) {
+	constructor(user, kafeName) {
 		this.email = user.email
 		this.firstName = user.firstName
 		this.lastName = user.lastName
 		this.phone = user.phone
 		this.adress = user.adress
-		this.kafeName = user.kafeName
+		this.kafeName = kafeName
 		this.id = user.id
 		this.isActivated = user.isActivated
 	}
