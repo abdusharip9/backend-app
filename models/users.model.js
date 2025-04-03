@@ -9,6 +9,7 @@ const UserSchema = new Schema(
 		phone: { type: [String], required: false, default: [] },
 		adress: { type: String, required: false },
 		isActivated: { type: Boolean, default: false },
+		verificationCode: { type: Number, default: null },
 	},
 	{ timestamps: true }
 )

@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt')
 const UserDto = require('../dtos/user.dto')
 const tokenService = require('./token.service')
 const kafeModel = require('../models/kafe.model')
+const emailService = require('./email.service')
 
 class AuthService {
 	async register(email, password) {
@@ -14,14 +15,42 @@ class AuthService {
 		}
 
 		const hashPassword = await bcrypt.hash(password, 10)
-		const user = await usersModel.create({ email, password: hashPassword })
+		const verificationCode = Math.floor(1000 + Math.random() * 9000).toString()
 
-		const userDto = new UserDto(user)
-		const tokens = tokenService.generateToken({ ...UserDto })
+		const user = await usersModel.create({
+			email,
+			password: hashPassword,
+			verificationCode: verificationCode,
+		})
 
-		await tokenService.saveToken(userDto.id, tokens.refreshToken)
+		emailService.sendMail(email, verificationCode)
 
-		return { user: userDto, ...tokens }
+		return { message: 'Verification code sent!' }
+	}
+
+	async verifyCode(email, code) {
+		const user = await usersModel.findOne({ email })
+		if (!user) {
+			throw BaseError.BadRequest(`User ${email} not found`)
+		}
+
+		if (user.verificationCode == code) {
+			user.verificationCode = null
+			user.isActivated = true
+			user.save()
+
+			const userDto = new UserDto(user)
+			const tokens = tokenService.generateToken({ ...UserDto })
+			await tokenService.saveToken(userDto.id, tokens.refreshToken)
+			return {
+				user: userDto,
+				message: 'Email verified successfully!',
+				status: 200,
+				...tokens,
+			}
+		} else {
+			return { message: 'Invalid code', status: 404 }
+		}
 	}
 
 	async login(email, password) {

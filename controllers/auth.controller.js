@@ -5,6 +5,16 @@ class AuthController {
 		try {
 			const { email, password } = req.body
 			const data = await authService.register(email, password)
+			res.json({ data })
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async verifyCode(req, res, next) {
+		try {
+			const { email, code } = req.body
+			const data = await authService.verifyCode(email, code)
 			return res.json({ data })
 		} catch (error) {
 			next(error)

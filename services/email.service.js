@@ -4,8 +4,8 @@ class EmailService {
 	constructor() {
 		this.transporter = nodemailer.createTransport({
 			host: process.env.SMTP_HOST,
-			posrt: process.env.SMTP_PORT,
-			secure: false,
+			port: parseInt(process.env.SMTP_PORT), // ✅ To‘g‘ri format
+			secure: process.env.SMTP_PORT === '465', // ✅ 465 -> true, boshqa portlar false
 			auth: {
 				user: process.env.SMTP_USER,
 				pass: process.env.SMTP_PASSWORD,
@@ -13,17 +13,18 @@ class EmailService {
 		})
 	}
 
-	async sendMail(email, activationLink) {
+	async sendMail(email, verificationCode) {
 		await this.transporter.sendMail({
 			from: process.env.SMTP_USER,
 			to: email,
 			subject: 'Account Activation',
 			html: `
-        <h1>Activate your account</h1>
-        <p>Click the link below to activate your account:</p>
-        <a href="${activationLink}">${activationLink}</a>
-      `,
+				<h1>Activate your account</h1>
+				<p>Use the code below to activate your account:</p>
+				<h3>${verificationCode}</h3>
+			`,
 		})
 	}
 }
+
 module.exports = new EmailService()

@@ -21,6 +21,7 @@ router.post(
 	},
 	authController.register
 )
+router.post('/verify-code', authController.verifyCode)
 router.post('/login', authController.login)
 router.post('/logout', authController.logout)
 router.get('/refresh', authController.refresh)
