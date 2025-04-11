@@ -1,8 +1,13 @@
-const { Schema, model } = require('mongoose')
+const { Schema, model, Types } = require('mongoose');
 
 const KafeSchema = new Schema({
-	id: { type: Schema.ObjectId, ref: 'User' },
-	name: { type: [String], required: false, default: [] },
-})
+	adminId: { type: Schema.ObjectId, ref: 'User', required: true },
+	kafes: [
+		{
+			_id: { type: Schema.ObjectId, default: () => new Types.ObjectId() },
+			name: { type: String, required: true }
+		}
+	]
+});
 
-module.exports = model('Kafe', KafeSchema)
+module.exports = model('Kafe', KafeSchema);

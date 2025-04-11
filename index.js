@@ -29,7 +29,7 @@ app.use(cookieParser())
 
 // Routes
 app.use('/api/auth', require('./routes/auth.route'))
-
+app.use('/api/crud', require('./routes/crud.route.js'))
 // Errors
 app.use(errorMiddleware)
 
