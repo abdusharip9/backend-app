@@ -67,7 +67,6 @@ class AuthService {
 
 	async login(email, password) {
 		const user = await usersModel.findOne({ email })
-		console.log(user, email)
 
 		if (!user) {
 			throw BaseError.BadRequest('User is not found or alredy exist')

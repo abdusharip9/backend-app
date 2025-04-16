@@ -13,30 +13,14 @@ router.post(
 	crudController.addKafe
 )
 router.post(
-	'/update-user/add-phone/:id',
-	authMiddleware,
-	crudController.addPhone
-)
-router.post(
 	'/update-user/delete-kafeName/:id',
 	authMiddleware,
 	crudController.deleteKafe
-)
-router.post(
-	'/update-user/delete-phone/:id',
-	authMiddleware,
-	crudController.deletePhone
 )
 
 // admin ning kafelarini olish, admin id orqali
 router.get('/kafes/:adminId', authMiddleware, crudController.getKafes)
 
-// kafe ning foydalanuvchilari user larini olish, kafe id orqali
-router.get('/kafes/:kafeId/users', authMiddleware, crudController.getKafeUsers)
-
-// kafe ga foydalanuvchi, user qo'shish uchun
-router.post('/kafes/:adminId/add-user/:kafeId', authMiddleware, crudController.addKafeUser)
-
-router.get('/kafe/:adminId/get-kafe-data/:kafeId', authMiddleware, crudController.getKafeUserData)
+router.get('/kafes/:adminId/kafe/:kafeId', authMiddleware, crudController.getKafeUserData)
 
 module.exports = router
