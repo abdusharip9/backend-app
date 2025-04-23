@@ -1,14 +1,18 @@
 const BaseError = require('../errors/base.error')
 const usersModel = require('../models/users.model')
+const cafeModel = require('../models/cafes.model')
+const tariffModel = require('../models/tariffs.model')
 const bcrypt = require('bcrypt')
 const UserDto = require('../dtos/user.dto')
 const tokenService = require('./token.service')
 const emailService = require('./email.service')
 
+
 class AuthService {
-	async register(email, password, firstName, lastName, phone ) {
+	async register(email, password, firstName, lastName, phone, kafeName ) {
 		const existUser = await usersModel.findOne({ email })
 		const existPhone = await usersModel.findOne({ phone })
+		const existKafe = await cafeModel.findOne({ name: kafeName })
 
 		if (existUser && existUser.isActivated === true) {
 			throw BaseError.BadRequest(`Foydalanuvchi ${email} allaqachon mavjud.`)
@@ -16,6 +20,11 @@ class AuthService {
 		if (existPhone && existPhone.isActivated === true) {
 			throw BaseError.BadRequest(`Telefon raqam ${phone} allaqachon mavjud.`)
 		}
+		if (existKafe && existKafe.isActivated === true) {
+			throw BaseError.BadRequest(`Kafe nomi ${phone} allaqachon mavjud.`)
+		}
+
+		const defaultTariff = await tariffModel.findOne({ name: 'Free' });
 
 		// const hashPassword = await bcrypt.hash(password, 10)
 		const verificationCode = Math.floor(1000 + Math.random() * 9000).toString()
@@ -25,13 +34,19 @@ class AuthService {
 			existUser.verificationCode = verificationCode
 			await existUser.save()
 		} else {
-			await usersModel.create({
+			const newUser = await usersModel.create({
 				email,
 				password: password,
 				firstName: firstName,
 				lastName: lastName,
 				phone: phone,
 				verificationCode: verificationCode,
+				role: 'user'
+			})
+			await cafeModel.create({
+				name: kafeName,
+				owner: newUser._id,
+				tariff: null
 			})
 		}
 

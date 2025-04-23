@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
-const { Schema, model } = mongoose;
 
-// SUBSCRIPTION
-const subscriptionSchema = new mongoose.Schema({
-	cafeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe', required: true },
-	tariffId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tariff', required: true },
-	startDate: { type: Date, required: true },
-	endDate: { type: Date, required: true },
-	isActive: { type: Boolean, default: true }
-}, { timestamps: true });
+const SubscriptionSchema = new mongoose.Schema({
+  user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
+  tariff_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Tariff', required: true },
+  payment_type: { type: String, enum: ['monthly', 'yearly', 'daily'], required: true },
+  start_date: { type: Date, required: true },
+  end_date: { type: Date },
+  status: { type: String, enum: ['active', 'expired', 'cancelled'], default: 'active' },
+  created_at: { type: Date, default: Date.now },
+  updated_at: { type: Date, default: Date.now }
+});
 
-module.exports = model('Subscription', subscriptionSchema)
+module.exports = mongoose.model('Subscription', SubscriptionSchema);

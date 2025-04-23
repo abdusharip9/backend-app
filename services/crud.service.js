@@ -89,13 +89,13 @@ class CrudService{
 			throw new Error('Id not found!')
 		}
 
-		await kafeModel.findOneAndDelete(
+		const kafeName = await kafeModel.findOneAndDelete(
 			{ owner: id },
-			{name: post.kafeName}
+			{_id: post.id}
 		);
 
 		return {
-			message: `${post.kafeName} - Olib tashlandi`,
+			message: `${kafeName.name} - Olib tashlandi`,
 		}
 	}
 

@@ -43,7 +43,6 @@ class CrudController {
 	async deleteKafe(req, res, next) {
 		try {
 			const { body, params } = req
-			console.log(body.phone, params.id)
 
 			const newData = await crudService.deleteKafe(body, params.id)
 			return res.json({ newData })

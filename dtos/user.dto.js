@@ -17,5 +17,6 @@ module.exports = class UserDto {
 		this.kafeName = kafeName
 		this.id = user.id
 		this.isActivated = user.isActivated
+		this.password = user.password
 	}
 }
