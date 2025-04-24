@@ -24,29 +24,31 @@ class AuthService {
 			throw BaseError.BadRequest(`Kafe nomi ${phone} allaqachon mavjud.`)
 		}
 
-		const defaultTariff = await tariffModel.findOne({ name: 'Free' });
+		
 
 		// const hashPassword = await bcrypt.hash(password, 10)
 		const verificationCode = Math.floor(1000 + Math.random() * 9000).toString()
-
+		
 		if (existUser && existUser.isActivated === false) {
 			existUser.password = password
 			existUser.verificationCode = verificationCode
 			await existUser.save()
+			console.log(44444444);
 		} else {
+			console.log(44444448888);
 			const newUser = await usersModel.create({
 				email,
-				password: password,
-				firstName: firstName,
-				lastName: lastName,
-				phone: phone,
-				verificationCode: verificationCode,
+				password,
+				firstName,
+				lastName,
+				phone,
+				verificationCode,
 				role: 'user'
 			})
+			console.log(44444448888);
 			await cafeModel.create({
 				name: kafeName,
 				owner: newUser._id,
-				tariff: null
 			})
 		}
 

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const SubscriptionSchema = new mongoose.Schema({
-  user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
+  kafe_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Cafe', required: true },
   tariff_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Tariff', required: true },
   payment_type: { type: String, enum: ['monthly', 'yearly', 'daily'], required: true },
   start_date: { type: Date, required: true },

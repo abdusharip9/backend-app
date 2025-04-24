@@ -4,21 +4,16 @@ const { body, validationResult } = require('express-validator')
 
 const router = express.Router()
 
-router.post(
-	'/register', 
-	body('email')
-		.isEmail()
-		.withMessage('Email formati noto`g`ri'), 
-	body('password')
-		.isLength({ min: 4, max: 30 })
-		.withMessage('Parol o`lchamida xatolik'),
-	(req, res, next) => {
+router.post('/register',
+		body('email').isEmail().withMessage('Email formati noto`g`ri'), 
+		body('password').isLength({ min: 4, max: 30 }).withMessage('Parol o`lchamida xatolik'),
+		(req, res, next) => {
 		const errors = validationResult(req)
 		if (!errors.isEmpty()) {
 			return res.status(400).json({ errors: errors.array() })
 		}
 		next()
-	},
+	}, 
 	authController.register
 )
 router.post('/verify-code', authController.verifyCode)

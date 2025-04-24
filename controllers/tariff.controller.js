@@ -1,6 +1,6 @@
 const Tariff = require('../models/tariffs.model');
 const Subscription = require('../models/subscription.model');
-const Payment = require('../models/payment.model');
+const Cafe = require('../models/cafes.model');
 
 const createTariff = async (req, res) => {
   try {
@@ -82,8 +82,7 @@ const checkFreeTrial = async (req, res) => {
 
 const selectTariff = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const { tariff_id, payment_type } = req.body;
+    const { tariff_id, payment_type, kafe_id} = req.body;
 
     // Check if this is a free trial tariff
     const tariff = await Tariff.findById(tariff_id);
@@ -94,7 +93,7 @@ const selectTariff = async (req, res) => {
 
     // Check if user already has a free trial subscription
     const existingFreeTrial = await Subscription.findOne({
-      user_id: userId,
+      kafe_id: kafe_id,
       tariff_id: tariff._id,
       status: { $in: ['active', 'expired'] }
     });
@@ -120,13 +119,15 @@ const selectTariff = async (req, res) => {
     else if (payment_type === 'yearly') endDate.setFullYear(now.getFullYear() + selectedPlan.duration);
 
     const newSub = await Subscription.create({
-      user_id: userId,
+      kafe_id: kafe_id,
       tariff_id: tariff._id,
       payment_type,
       start_date: now,
       end_date: endDate,
       status: 'active'
     });
+
+    await Cafe.findByIdAndUpdate(kafe_id, { tariff: tariff._id, status: 'active'}, { new: true });
 
     return res.status(201).json({ message: "Bepul sinov tarifi tanlandi", subscription: newSub });
 
@@ -136,13 +137,13 @@ const selectTariff = async (req, res) => {
   }
 };
 
-const checkUserTariff = async (req, res) => {
+const checkKafeTariff = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const kafeId = req.params.kafe_id;
 
     // Eng so'nggi aktiv subscriptionni topamiz
     const subscription = await Subscription.findOne({
-      user_id: userId,
+      kafe_id: kafeId,
       status: 'active'
     }).populate('tariff_id');
 
@@ -174,6 +175,27 @@ const checkUserTariff = async (req, res) => {
   }
 };
 
+const getOneTariff = async (req, res) => {
+  try {
+    const tariffId = req.params.tarif_id;
+    const tariff = await Tariff.findById(tariffId);
+    const tariff_name = tariff.name;
+    const tariff_durations = tariff.durations;
+    const tariff_is_free_trial = tariff.is_free_trial;
+    const tariff_features = tariff.features;
+    if (!tariff) return res.status(404).json({ message: 'Tarif topilmadi' });
+    res.json({
+      tariff_name,
+      tariff_durations,
+      tariff_is_free_trial,
+      tariff_features
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Server xatosi' });
+  }
+};
+
 module.exports = {
   createTariff, 
 	getAllTariffs,
@@ -181,5 +203,6 @@ module.exports = {
   updateTariff,
   checkFreeTrial,
   selectTariff,
-  checkUserTariff
+  checkKafeTariff,
+  getOneTariff
 };

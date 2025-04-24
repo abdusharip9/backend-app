@@ -5,6 +5,8 @@ const router = express.Router()
 
 router.post('/login', authMiddleware, async (req, res) => {
   try {
+    console.log('galdik');
+    
     const response = await fetch('http://172.20.169.105:8080/A1Kafe_war/login.do?mode=add_web_user', {
       method: 'POST',
       headers: {

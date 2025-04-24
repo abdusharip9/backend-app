@@ -3,7 +3,7 @@ const Subscription = require('../models/subscription.model');
 
 const createSubscription = async (req, res) => {
   try {
-    const { user_id, tariff_id, payment_type } = req.body;
+    const { kafe_id, tariff_id, payment_type } = req.body;
 
     const tariff = await Tariff.findById(tariff_id);
     if (!tariff) return res.status(404).json({ message: "Tariff topilmadi" });
@@ -25,7 +25,7 @@ const createSubscription = async (req, res) => {
     }
 
     const subscription = new Subscription({
-      user_id,
+      kafe_id,
       tariff_id,
       payment_type,
       start_date: startDate,
