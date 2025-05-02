@@ -3,6 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
+const path = require('path')
 const errorMiddleware = require('./middlewares/error.middleware.js')
 
 const app = express()
@@ -29,12 +30,22 @@ app.use(
 )
 app.use(cookieParser())
 
+// Serve static files from the frontend directory
+app.use(express.static(path.join(__dirname, '../frontend')))
+
 // Routes
 app.use('/api/auth', require('./routes/auth.route'))
 app.use('/api/crud', require('./routes/crud.route'))
 app.use('/api/tariffs', require('./routes/tariff.route'))
 app.use('/api/features', require('./routes/feature.route.js'))
 app.use('/proxy', require('./routes/login.route'))
+app.use('/payme', require('./routes/payme.route.js'))
+
+// Catch-all route to serve index.html for client-side routing
+app.get('*', (req, res) => {
+	res.sendFile(path.join(__dirname, '../frontend/index.html'))
+})
+
 // Errors
 app.use(errorMiddleware)
 

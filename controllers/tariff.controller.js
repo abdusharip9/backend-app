@@ -88,7 +88,14 @@ const selectTariff = async (req, res) => {
     const tariff = await Tariff.findById(tariff_id);
     if (!tariff) return res.status(404).json({ message: "Tarif topilmadi" });
     if (!tariff.is_free_trial) {
-      return res.status(400).json({ message: "Faqat bepul sinov tarifi tanlanishi mumkin" });
+      return res.status(402).json({
+        message: "Bu tarif bepul emas. Iltimos, to‘lovni amalga oshiring.",
+        redirect_to: "/api/payme/transaction/payme",
+        data: {
+          tariff_id: tariff._id,
+          kafe_id
+        }
+      });
     }
 
     // Check if user already has a free trial subscription

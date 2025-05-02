@@ -86,12 +86,13 @@ class AuthService {
 		const user = await usersModel.findOne({ email })
 
 		if (!user) {
-			throw BaseError.BadRequest('User is not found or alredy exist')
+			throw BaseError.BadRequest('Foydalanuvchi topilmadi yoki Email xato')
 		}
 
 		// const isPassword = await bcrypt.compare(password, user.password)
 		if (password !== user.password) {
-			throw BaseError.BadRequest('Password is incorrect')
+			// throw BaseError.BadRequest('Parol xato')
+			throw BaseError.BadRequest('Foydalanuvchi topilmadi yoki Email xato')
 		}
 
 		const userDto = new UserDto(user)
@@ -108,7 +109,7 @@ class AuthService {
 
 	async refresh(refreshToken) {
 		if (!refreshToken) {
-			throw BaseError.UnAuthorizedError('Bad authorization')
+			throw BaseError.UnAuthorizedError('Avtorizatsiya xatoligi')
 		}
 
 		const userPayload = tokenService.validateRefreshToken(refreshToken)
@@ -116,7 +117,7 @@ class AuthService {
 		console.log(userPayload, tokenDb)
 
 		if (!userPayload || !tokenDb) {
-			throw BaseError.UnAuthorizedError('Bad authorization')
+			throw BaseError.UnAuthorizedError('Avtorizatsiya xatoligi')
 		}
 
 		const user = await usersModel.findById(userPayload.id)
