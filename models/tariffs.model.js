@@ -17,7 +17,8 @@ const TariffSchema = new mongoose.Schema({
     }
   },
   is_free_trial: { type: Boolean, default: false },
-  features: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Feature' }]
+  features: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Feature' }],
+  description: { type: String }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Tariff', TariffSchema);
