@@ -6,8 +6,10 @@ const router = express.Router()
 router.post('/login', authMiddleware, async (req, res) => {
   try {
     console.log('galdik');
+
+    console.log(req.body);
     
-    const response = await fetch('http://172.20.169.105:8080/A1Kafe_war/login.do?mode=add_web_user', {
+    const response = await fetch('http://90.156.199.148:8082/kafe/login.do?mode=add_web_user', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -20,7 +22,7 @@ router.post('/login', authMiddleware, async (req, res) => {
     const redirectUrl = response.headers.get('location');
 
     if (redirectUrl) {
-      return res.json({ redirect: 'http://172.20.169.105:8080/A1Kafe_war/' + redirectUrl }); // frontendga redirect manzilini qaytaramiz
+      return res.json({ redirect: 'http://90.156.199.148:8082/kafe/' + redirectUrl }); // frontendga redirect manzilini qaytaramiz
     }
 
     const result = await response.text();
