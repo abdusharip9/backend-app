@@ -61,6 +61,24 @@ class AuthController {
 			next(error)
 		}
 	}
+
+	async forgotPassword(req, res, next) {
+		try {
+			await authService.forgotPassword(req.body.email)
+			return res.json({ success: true })
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async recoveryAccount(req, res, next) {
+		try {
+			await authService.recoveryAccount(req.body.token, req.body.password)
+			return res.json({ message: 'Parol muvaffaqiyatli o\'zgartirildi!' })
+		} catch (error) {
+			next(error)
+		}
+	}
 }
 
 module.exports = new AuthController()

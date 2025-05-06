@@ -20,14 +20,15 @@ router.post('/verify-code', authController.verifyCode)
 router.post('/login', authController.login)
 router.post('/logout', authController.logout)
 router.get('/refresh', authController.refresh)
-
+router.post('/forgot-password', authController.forgotPassword)
+router.put('/recovery-account', authController.recoveryAccount)
 
 router.get('/ping', (req, res) => {
 	res.status(200).json({ message: 'Server is alive' })
 })
 
 setInterval(() => {
-	fetch('https://backend-app-5rtx.onrender.com/api/auth/api/ping')
+	fetch(`${process.env.CLIENT_URL}/api/auth/api/ping`)
 		.then(res => console.log('✅ Ping sent to keep the server alive'))
 		.catch(err => console.error('❌ Ping failed:', err))
 }, 600000)

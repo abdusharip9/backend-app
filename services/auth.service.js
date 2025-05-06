@@ -24,8 +24,6 @@ class AuthService {
 			throw BaseError.BadRequest(`Kafe nomi ${phone} allaqachon mavjud.`)
 		}
 
-		
-
 		// const hashPassword = await bcrypt.hash(password, 10)
 		const verificationCode = Math.floor(1000 + Math.random() * 9000).toString()
 		
@@ -128,6 +126,43 @@ class AuthService {
 		await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
 		return { user: userDto, ...tokens }
+	}
+
+	async forgotPassword(email) {
+		if (!email) {
+			throw BaseError.BadRequest('Email manzilini kiriting')
+		}
+		
+		const user = await usersModel.findOne({ email })
+		if (!user) {
+			throw BaseError.BadRequest('Foydalanuvchi topilmadi')
+		}
+		
+		const userDto = new UserDto(user)
+		const tokens = tokenService.generateToken({ ...userDto })
+		
+		await emailService.sendForgotPasswordMail(email, `${process.env.CLIENT_URL}/new-password.html?token=${tokens.accessToken}`)
+	}
+
+	async recoveryAccount(token, password) {
+		if (!token) {
+			throw BaseError.BadRequest('Token topilmadi')
+		}		
+
+		if (!password) {
+			throw BaseError.BadRequest('Parol kiriting')
+		}
+		
+		const userData = tokenService.validateAccessToken(token)
+		if (!userData) {
+			throw BaseError.BadRequest('Token xato')
+		}
+
+		// const passwordHash = await bcrypt.hash(password, 10)
+		const user = await usersModel.findByIdAndUpdate(userData.id, { password: password })
+		console.log(user)
+
+		return 200
 	}
 }
 

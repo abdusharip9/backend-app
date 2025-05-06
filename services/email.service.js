@@ -25,6 +25,19 @@ class EmailService {
 			`,
 		})
 	}
+
+	async sendForgotPasswordMail(email, activationLink) {
+		await this.transporter.sendMail({
+			from: process.env.SMTP_USER,
+			to: email,
+			subject: 'Parolni tiklash',
+			html: `
+				<h1>Parolni tiklash</h1>
+				<p>Parolni tiklash uchun quyidagi linkga o'ting:</p>
+				<a href="${activationLink}">Parolni tiklash havolasi</a>
+			`,
+		})
+	}
 }
 
 module.exports = new EmailService()
