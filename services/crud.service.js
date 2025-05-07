@@ -99,6 +99,11 @@ class CrudService{
 		}
 	}
 
+	async getUsers(){
+		const users = await usersModel.find({role: 'user', isActivated: true})
+		return users
+	}
+
 }
 
 module.exports = new CrudService()

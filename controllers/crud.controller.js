@@ -103,6 +103,15 @@ class CrudController {
 			next(error)
 		}
 	}
+
+	async getUsers(req, res, next){
+		try {
+			const users = await crudService.getUsers()
+			return res.json(users)
+		} catch (error) {
+			next(error)
+		}
+	}
 }
 
 module.exports = new CrudController()

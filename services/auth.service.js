@@ -31,9 +31,7 @@ class AuthService {
 			existUser.password = password
 			existUser.verificationCode = verificationCode
 			await existUser.save()
-			console.log(44444444);
 		} else {
-			console.log(44444448888);
 			const newUser = await usersModel.create({
 				email,
 				password,
@@ -43,11 +41,12 @@ class AuthService {
 				verificationCode,
 				role: 'user'
 			})
-			console.log(44444448888);
-			await cafeModel.create({
+			const newKafe = await cafeModel.create({
 				name: kafeName,
 				owner: newUser._id,
 			})
+			newUser.cafes.push(newKafe._id)
+			await newUser.save()
 		}
 
 		await emailService.sendMail(email, verificationCode)
