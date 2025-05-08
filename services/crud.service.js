@@ -79,6 +79,11 @@ class CrudService{
 			owner: id,
 		});
 
+		const user = await usersModel.findByIdAndUpdate(id, {
+			$push: { cafes: kafes._id }
+		});
+		console.log('user => ', user);
+
 		return {
 			kafes,
 			message: 'Malumotlar yangilandi',
@@ -99,10 +104,18 @@ class CrudService{
 		}
 	}
 
-	async getUsers(){
-		const users = await usersModel.find({role: 'user', isActivated: true})
-		return users
+	async getUsers() {
+		const users = await usersModel
+			.find({ isActivated: true })
+			.populate({
+				path: 'cafes',
+				populate: [
+					{ path: 'tariff' }
+				]
+			});
+		return users;
 	}
+	
 
 }
 

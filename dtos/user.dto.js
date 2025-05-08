@@ -7,6 +7,7 @@ module.exports = class UserDto {
 	kafeName
 	id
 	isActivated
+	role
 
 	constructor(user, kafeName) {
 		this.email = user.email
@@ -18,5 +19,6 @@ module.exports = class UserDto {
 		this.id = user.id
 		this.isActivated = user.isActivated
 		this.password = user.password
+		this.role = user.role
 	}
 }
