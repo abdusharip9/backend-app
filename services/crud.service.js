@@ -106,7 +106,7 @@ class CrudService{
 
 	async getUsers() {
 		const users = await usersModel
-			.find({ isActivated: true })
+			.find()
 			.populate({
 				path: 'cafes',
 				populate: [
@@ -115,7 +115,6 @@ class CrudService{
 			});
 		return users;
 	}
-	
 
 }
 
