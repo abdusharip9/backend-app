@@ -9,18 +9,7 @@ const errorMiddleware = require('./middlewares/error.middleware.js')
 const app = express()
 
 app.use(express.json())
-const allowedOrigins = [
-	'http://127.0.0.1:5500',
-	'http://127.0.0.1:5501',
-	'https://a1kafe-mod.netlify.app',
-	'http://127.0.0.1:3000',
-	'http://localhost:3000',
-	'http://127.0.0.1:3001',
-	'http://127.0.0.1:5173',
-	'http://localhost:5500',
-	'http://172.20.169.105',
-	'http://192.168.28.188:8081',
-]
+const allowedOrigins = ['*']
 
 app.use(
 	cors({
