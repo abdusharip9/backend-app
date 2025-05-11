@@ -5,13 +5,13 @@ const { createTariff, getAllTariffs, deleteTariff, updateTariff, checkFreeTrial,
 
 const router = express.Router()
 
-router.post('/create', authMiddleware, checkAdminMiddleware, createTariff)
+router.post('/create', createTariff)
 router.get('/get-all', getAllTariffs);
 router.get('/get-one/:tarif_id', getOneTariff);
-router.delete('/delete/:tarif_id', authMiddleware, checkAdminMiddleware, deleteTariff);
-router.put('/update/:tarif_id', authMiddleware, checkAdminMiddleware, updateTariff)
-router.get('/check-free-trial', authMiddleware, checkFreeTrial);
-router.post('/select-tariff', authMiddleware, selectTariff);
-router.get('/check-kafe-tariff/:kafe_id', authMiddleware, checkKafeTariff)
+router.delete('/delete/:tarif_id', deleteTariff);
+router.put('/update/:tarif_id', updateTariff)
+router.get('/check-free-trial', checkFreeTrial);
+router.post('/select-tariff', selectTariff);
+router.get('/check-kafe-tariff/:kafe_id', checkKafeTariff)
 
 module.exports = router

@@ -12,7 +12,7 @@ exports.createFeature = async (req, res) => {
     });
 
     await feature.save();
-    res.status(201).json({ message: "Feature muvaffaqiyatli qo‘shildi", feature });
+    res.status(201).json(feature);
   } catch (err) {
     console.error("Feature yaratishda xatolik:", err);
     res.status(500).json({ error: 'Xatolik yuz berdi' });
@@ -35,7 +35,7 @@ exports.getAllFeatures = async (req, res) => {
 // Delete a feature
 exports.deleteFeature = async (req, res) => {
   try {
-    const deleted = await Feature.findByIdAndDelete(req.params.feature_id);
+    const deleted = await Feature.findByIdAndDelete({_id: req.params.feature_id});
     if (!deleted) return res.status(404).json({ message: 'Feature topilmadi' });
     res.json({ message: 'Feature muvaffaqiyatli o‘chirildi' });
   } catch (err) {
@@ -46,8 +46,22 @@ exports.deleteFeature = async (req, res) => {
 // Update a feature
 exports.updateFeature = async (req, res) => {
   try {
-    const updated = await Feature.findByIdAndUpdate(req.params.feature_id, req.body, { new: true });
-    if (!updated) return res.status(404).json({ message: 'Feature topilmadi' });
+    const featureId = req.params.feature_id;
+
+    // Agar bodyda code mavjud bo‘lsa, takroriyligini tekshiramiz
+    if (req.body.code) {
+      const existing = await Feature.findOne({ code: req.body.code, _id: { $ne: featureId } });
+      if (existing) {
+        return res.status(400).json({ message: 'Bu code allaqachon mavjud' });
+      }
+    }
+
+    const updated = await Feature.findByIdAndUpdate(featureId, req.body, { new: true });
+
+    if (!updated) {
+      return res.status(404).json({ message: 'Feature topilmadi' });
+    }
+
     res.json(updated);
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -11,7 +11,7 @@ class CrudController {
 		}
 	}
 
-	async getKafes(req, res, next){
+	async getUserKafes(req, res, next){
 		try {
 			const { adminId } = req.params
 			const kafes = await crudService.getKafes(adminId)
@@ -108,6 +108,14 @@ class CrudController {
 		try {
 			const users = await crudService.getUsers()
 			return res.json(users)
+		} catch (error) {
+			next(error)
+		}
+	}
+	async allKafes(req, res, next){
+		try {
+			const kafes = await crudService.allKafes()
+			return res.json(kafes)
 		} catch (error) {
 			next(error)
 		}

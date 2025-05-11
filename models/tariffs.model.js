@@ -2,20 +2,9 @@ const mongoose = require('mongoose');
 
 const TariffSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  durations: {
-    daily: {
-      duration: { type: Number },
-      price: { type: Number }
-    },
-    monthly: {
-      duration: { type: Number },
-      price: { type: Number }
-    },
-    yearly: {
-      duration: { type: Number },
-      price: { type: Number }
-    }
-  },
+  price: { type: Number, required: true },
+  duration: { type: String, enum: ['daily', 'monthly', 'yearly'], required: true },
+  duration_count: { type: Number, required: true },
   is_free_trial: { type: Boolean, default: false },
   features: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Feature' }],
   description: { type: String }

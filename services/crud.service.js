@@ -116,6 +116,11 @@ class CrudService{
 		return users;
 	}
 
+	async allKafes() {
+		const kafes = await kafeModel.find().populate('owner', 'firstName lastName email').populate('tariff', 'name price')
+		return kafes
+	}
+
 }
 
 module.exports = new CrudService()

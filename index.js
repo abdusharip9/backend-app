@@ -35,12 +35,15 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, '../frontend')))
 
 // Routes
+app.use('/api/admin', require('./routes/admin.route'))
 app.use('/api/auth', require('./routes/auth.route'))
 app.use('/api/crud', require('./routes/crud.route'))
 app.use('/api/tariffs', require('./routes/tariff.route'))
 app.use('/api/features', require('./routes/feature.route.js'))
 app.use('/proxy', require('./routes/login.route'))
 app.use('/payme', require('./routes/payme.route.js'))
+
+app.use('/api/update-tariffs', require('./run.script'))
 
 // Catch-all route to serve index.html for client-side routing
 app.get('*', (req, res) => {

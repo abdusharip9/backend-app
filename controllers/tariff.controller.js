@@ -4,18 +4,21 @@ const Cafe = require('../models/cafes.model');
 
 const createTariff = async (req, res) => {
   try {
-    const { name, durations, is_free_trial, features } = req.body;
+    const { name, price, duration, duration_count, is_free_trial, features, description } = req.body;
 
     // Simple validatsiya
     if (!name) return res.status(400).json({ message: "Tarif nomi kerak" });
-    if (!durations || Object.keys(durations).length === 0)
-      return res.status(400).json({ message: "Hech bo'lmaganda bitta duration kiriting (daily/monthly/yearly)" });
+    if (!price || !duration || !duration_count)
+      return res.status(400).json({ message: "Hech bo'lmaganda bitta muddat kiriting (daily/monthly/yearly)" });
 
     const newTariff = new Tariff({
       name,
-      durations,
+      price,
+      duration,
+      duration_count,
       is_free_trial: is_free_trial || false,
-      features
+      features,
+      description
     });
 
     await newTariff.save();
@@ -82,7 +85,7 @@ const checkFreeTrial = async (req, res) => {
 
 const selectTariff = async (req, res) => {
   try {
-    const { tariff_id, payment_type, kafe_id} = req.body;
+    const { tariff_id, kafe_id, payment_type} = req.body;
 
     // Check if this is a free trial tariff
     const tariff = await Tariff.findById(tariff_id);
@@ -113,22 +116,19 @@ const selectTariff = async (req, res) => {
       return res.status(400).json({ message: "Noto'g'ri payment_type" });
     }
 
-    const selectedPlan = tariff.durations[payment_type];
-    if (!selectedPlan || !selectedPlan.duration) {
-      return res.status(400).json({ message: `${payment_type} rejasi mavjud emas` });
-    }
+    const selectedPlan = tariff.duration_count;
 
     const now = new Date();
     const endDate = new Date(now);
 
-    if (payment_type === 'daily') endDate.setDate(now.getDate() + selectedPlan.duration);
-    else if (payment_type === 'monthly') endDate.setMonth(now.getMonth() + selectedPlan.duration);
-    else if (payment_type === 'yearly') endDate.setFullYear(now.getFullYear() + selectedPlan.duration);
+    if (tariff.duration === 'daily') endDate.setDate(now.getDate() + selectedPlan);
+    else if (tariff.duration === 'monthly') endDate.setMonth(now.getMonth() + selectedPlan);
+    else if (tariff.duration === 'yearly') endDate.setFullYear(now.getFullYear() + selectedPlan);
 
     const newSub = await Subscription.create({
       kafe_id: kafe_id,
       tariff_id: tariff._id,
-      payment_type,
+      payment_type: payment_type,
       start_date: now,
       end_date: endDate,
       status: 'active'
@@ -187,13 +187,18 @@ const getOneTariff = async (req, res) => {
     const tariffId = req.params.tarif_id;
     const tariff = await Tariff.findById(tariffId);
     const tariff_name = tariff.name;
-    const tariff_durations = tariff.durations;
+    // const tariff_durations = tariff.durations;
+    const tariff_price = tariff.price;
+    const tariff_duration = tariff.duration;
+    const tariff_duration_count = tariff.duration_count;
     const tariff_is_free_trial = tariff.is_free_trial;
     const tariff_features = tariff.features;
     if (!tariff) return res.status(404).json({ message: 'Tarif topilmadi' });
     res.json({
       tariff_name,
-      tariff_durations,
+      tariff_price,
+      tariff_duration,
+      tariff_duration_count,
       tariff_is_free_trial,
       tariff_features
     });
