@@ -28,7 +28,7 @@ router.get('/ping', (req, res) => {
 })
 
 setInterval(() => {
-	fetch(`${process.env.CLIENT_URL}/api/auth/api/ping`)
+	fetch(`${process.env.API_URL}/api/auth/api/ping`)
 		.then(res => console.log('✅ Ping sent to keep the server alive'))
 		.catch(err => console.error('❌ Ping failed:', err))
 }, 600000)
