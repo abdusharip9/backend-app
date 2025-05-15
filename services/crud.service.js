@@ -3,6 +3,9 @@ const BaseError = require('../errors/base.error')
 const kafeModel = require('../models/cafes.model')
 const usersModel = require('../models/users.model')
 const { Types } = require('mongoose');
+const tariffModel = require('../models/tariffs.model')
+const featureModel = require('../models/tariffs.feature.model')
+
 
 class CrudService{
 
@@ -117,8 +120,26 @@ class CrudService{
 	}
 
 	async allKafes() {
-		const kafes = await kafeModel.find().populate('owner', 'firstName lastName email').populate('tariff', 'name price')
+		const kafes = await kafeModel.find().populate('owner', 'firstName lastName email phone').populate('tariff', 'name price')
 		return kafes
+	}
+
+	// async getRoles() {
+	// 	const roles = await roleModel.find()
+	// 	return roles
+	// }
+
+	async getDataForDashboard(){
+		const allKafes = await kafeModel.countDocuments()
+		const allUsers = await usersModel.countDocuments()
+		const allTariffs = await tariffModel.countDocuments()
+		const allFeatures = await featureModel.countDocuments()	
+		return {
+			allKafes,
+			allUsers,
+			allTariffs,
+			allFeatures
+		}
 	}
 
 }

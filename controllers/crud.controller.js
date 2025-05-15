@@ -10,7 +10,6 @@ class CrudController {
 			next(error)
 		}
 	}
-
 	async getUserKafes(req, res, next){
 		try {
 			const { adminId } = req.params
@@ -20,7 +19,6 @@ class CrudController {
 			next(error)
 		}
 	}
-
 	async updateUser(req, res, next) {
 		try {
 			const { body, params } = req
@@ -30,7 +28,6 @@ class CrudController {
 			next(error)
 		}
 	}
-
 	async addKafe(req, res, next) {
 		try {
 			const { body, params } = req
@@ -50,60 +47,6 @@ class CrudController {
 			next(error)
 		}
 	}
-
-	async addPhone(req, res, next) {
-		try {
-			const { body, params } = req
-			const newData = await crudService.addPhone(body, params.id)
-			return res.json({ newData })
-		} catch (error) {
-			next(error)
-		}
-	}
-	async deletePhone(req, res, next) {
-		try {
-			const { body, params } = req
-			const newData = await crudService.deletePhone(body, params.id)
-			return res.json({ newData })
-		} catch (error) {
-			next(error)
-		}
-	}
-
-	async getKafeUsers(req, res, next){
-		try {
-			const { kafeId } = req.params
-			const kafeUsers = await crudService.getKafeUsers(kafeId)
-			return res.json( kafeUsers )
-		} catch (error) {
-			next(error)
-		}
-	}
-
-	async addKafeUser(req, res, next){
-		try {
-			const { body, params } = req
-			const kafeUserData = await crudService.addKafeUser(body, params.adminId, params.kafeId)
-			return res.json(kafeUserData)
-		} catch (error) {
-			if (error.code === 11000) {
-				res.status(409).json({ error: "Bunday foydalanuvchi allaqachon mavjud" });
-			} else {
-				next(error)
-			}
-		}
-	}
-
-	async getKafeUserData(req, res, next){
-		try {
-			const { adminId, kafeId } = req.params
-			const kafeUserData = await crudService.getKafeUserData(adminId, kafeId)
-			return res.json(kafeUserData)
-		} catch (error) {
-			next(error)
-		}
-	}
-
 	async getUsers(req, res, next){
 		try {
 			const users = await crudService.getUsers()
@@ -116,6 +59,22 @@ class CrudController {
 		try {
 			const kafes = await crudService.allKafes()
 			return res.json(kafes)
+		} catch (error) {
+			next(error)
+		}
+	}
+	// async getRoles(req, res, next){
+	// 	try {
+	// 		const roles = await crudService.getRoles()
+	// 		return res.json(roles)
+	// 	} catch (error) {
+	// 		next(error)
+	// 	}
+	// }
+	async getDataForDashboard(req, res, next){
+		try {
+			const data = await crudService.getDataForDashboard()
+			return res.json(data)
 		} catch (error) {
 			next(error)
 		}
